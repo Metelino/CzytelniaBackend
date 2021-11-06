@@ -1,5 +1,7 @@
+from django.shortcuts import get_object_or_404
 from ninja import Router
 from ninja.errors import HttpError
+
 from .models import User
 from .schemas import UserIn, UserOut
 
@@ -9,7 +11,7 @@ api = Router()
 
 @api.post('login')
 def login(request, data : UserIn):
-    user = User.objects.get(username=data.username)
+    user = get_object_or_404(User, username=data.username)
     if not user.password == data.password:
         raise HttpError(503, "Błędne hasło")
     print(f'{user.id}')

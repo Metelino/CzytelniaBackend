@@ -1,9 +1,11 @@
 from typing import List
 
 from ninja import Router
-from user.jwt import JWT
+from django.shortcuts import get_object_or_404
 from django.core.paginator import Paginator
+from django.http import FileResponse
 
+from user.jwt import JWT
 from user.models import User
 from .models import Book
 from .schemas import BookSchema, BookDetailSchema
@@ -40,3 +42,15 @@ def add_to_favorite(request):
     id = int(request.auth['sub'])
     profile = User.objects.get(id=id).profile
     return list(profile.books.all())
+
+@api.get("get_cover/{book_id}")
+def book_cover(request, book_id : int):
+    book = get_object_or_404(Book, id=book_id)
+    return FileResponse(open(book.cover.path, 'rb'))
+
+@api.get("get_page/{book_id}", auth=JWT())
+def book_page(request, book_id : int, page_num : int = 1):
+    book = get_object_or_404(Book, id=book_id)
+    #page_num = request.GET.get('page_num', 1)
+    print(f'PATH : {book.content.path}')
+    return FileResponse(open(book.content.path, 'rb'))

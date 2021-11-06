@@ -1,14 +1,14 @@
 from django.db import models
 
 class Book(models.Model):
-    name = models.CharField(max_length=200)
+    title = models.CharField(max_length=200)
     author = models.CharField(max_length=200)
     content = models.FileField()
     cover = models.FileField()
     comments = models.ManyToManyField(to='comment.Comment', related_name='book_comments', blank=True)
 
     def __str__(self):
-        return f'{self.name} by {self.author}'
+        return f'{self.title} by {self.author}'
     
     class Meta:
         ordering = ['id']
