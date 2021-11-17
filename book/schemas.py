@@ -9,4 +9,4 @@ class BookSchema(ModelSchema):
 class BookDetailSchema(ModelSchema):
     class Config:
         model = Book
-        model_fields = ['id', 'title', 'author', 'cover']
+        model_fields = ['id', 'title','author', 'summary', 'cover']

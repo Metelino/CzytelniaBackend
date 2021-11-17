@@ -1,10 +1,11 @@
 from django.db import models
 
 class Book(models.Model):
-    title = models.CharField(max_length=200)
-    author = models.CharField(max_length=200)
+    title = models.CharField(max_length=200, default='')
+    author = models.CharField(max_length=200, default='')
     content = models.FileField()
     cover = models.FileField()
+    summary = models.CharField(max_length=1000, default='')
     comments = models.ManyToManyField(to='comment.Comment', related_name='book_comments', blank=True)
 
     def __str__(self):
@@ -12,10 +13,11 @@ class Book(models.Model):
     
     class Meta:
         ordering = ['id']
-    # @property
-    # def liked(self):
-    #     return self.comments.filter(review=True)
 
-    # @property
-    # def disliked(self):
-    #     return self.comments.filter(review=False)
+    @property
+    def liked(self) -> int:
+        return self.comments.filter(review=True).count()
+
+    @property
+    def disliked(self) -> int:
+        return self.comments.filter(review=False).count()
