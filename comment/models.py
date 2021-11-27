@@ -12,10 +12,10 @@ class Comment(models.Model):
     modified_at = models.DateField(auto_now=True)
     modified = models.BooleanField(default=False)
 
-    def save(self):
+    def save(self, *args, **kwargs):
         if self.id:
             self.modified = True
-        super().save()
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'Comment by {self.user} posted at {self.created_at}'

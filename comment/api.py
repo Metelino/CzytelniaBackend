@@ -8,33 +8,37 @@ from book.models import Book
 from .models import Comment
 from .schemas import CommentEditSchema, CommentSchema
 from user.jwt import JWT
+from user.models import User
 
 api = Router()
 
-@api.get('get/{book_id}', response=List[CommentSchema])
+@api.get('get/{book_id}', response={200 : List[CommentSchema]})
 def get_comments(request, book_id: int):
     book = get_object_or_404(Book, id=book_id)
     comments = book.comment_set.all()
-    return list(comments)
+    return 200, list(comments)
 
-@api.post('post/{book_id}', auth=JWT())
+@api.post('post/{book_id}', response={201 : CommentSchema}, auth=JWT())
 def create_comment(request, book_id: int, data: CommentEditSchema):
-    comm = Comment.objects.create(**data.dict, book=book_id, user=request.user)
-    return {'id': comm.id}
+    id = int(request.auth['sub'])
+    print(data.dict())
+    comm = Comment.objects.create(**data.dict(), book_id=book_id, user_id=id)
+    return 201, comm
 
-@api.put('put/{comment_id}', auth=JWT())
-def update_comment(request, comment_id: int, data: CommentEditSchema):
+@api.put('put/{comment_id}', response={204 : None}, auth=JWT())
+def update_comment(request, comment_id : int,  data: CommentEditSchema):
     comment = get_object_or_404(Comment, id=comment_id)
     id = int(request.auth['sub'])
     if not comment.user.id == id:
         raise HttpError(404, 'Comment does not belong to this user')
     for attr, value in data.dict().items():
         setattr(comment, attr, value)
-    return {'success': True}
+    comment.save()
+    return 204, None
 
-@api.delete('delete/{comment_id}', auth=JWT())
+@api.delete('delete/{comment_id}', response={204 : None}, auth=JWT())
 def del_comment(request, comment_id: int):
     comment = get_object_or_404(Comment, id=comment_id)
     # Dodaj sprawdzanie czy comment jest usera
     comment.delete()
-    return {'success': True}
+    return 204, None

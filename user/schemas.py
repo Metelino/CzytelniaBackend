@@ -1,5 +1,8 @@
-from ninja import ModelSchema
+from ninja import ModelSchema, Schema
 from .models import User
+
+class Token(Schema):
+    token : str
 
 class UserIn(ModelSchema):
     class Config:
