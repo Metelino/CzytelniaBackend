@@ -62,7 +62,7 @@ def book_cover(request, book_id : int):
     book = get_object_or_404(Book, id=book_id)
     return FileResponse(open(book.cover.path, 'rb'), status=200)
 
-@api.get("get_page/{book_id}", auth=JWT())
+@api.get("get_pdf/{book_id}", auth=JWT())
 def book_page(request, book_id : int, page_num : int = 1):
     book = get_object_or_404(Book, id=book_id)
     #page_num = request.GET.get('page_num', 1)

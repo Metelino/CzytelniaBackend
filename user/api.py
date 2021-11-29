@@ -15,10 +15,10 @@ def login(request, data : UserIn):
     if not user.password == data.password:
         raise HttpError(503, "Wrong password")
     print(f'{user.id}')
-    return 200, {'token' : create_JWT(sub = str(user.id), name = user.username)}
+    return 200, {'id' : user.id, 'token' : create_JWT(sub = str(user.id), name = user.username)}
     #return user
 
 @api.post('register', response={200 : Token})
 def register(request, data : UserIn):
     user = User.objects.create(username=data.username, password=data.password)
-    return 200, {'token' : create_JWT(sub = str(user.id), name = user.username)}
+    return 200, {'id' : user.id, 'token' : create_JWT(sub = str(user.id), name = user.username)}

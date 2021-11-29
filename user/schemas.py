@@ -3,6 +3,7 @@ from .models import User
 
 class Token(Schema):
     token : str
+    id : int
 
 class UserIn(ModelSchema):
     class Config:
