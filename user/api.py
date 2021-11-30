@@ -13,12 +13,15 @@ api = Router()
 def login(request, data : UserIn):
     user = get_object_or_404(User, username=data.username)
     if not user.password == data.password:
-        raise HttpError(503, "Wrong password")
-    print(f'{user.id}')
+        raise HttpError(401, "Wrong password")
     return 200, {'id' : user.id, 'token' : create_JWT(sub = str(user.id), name = user.username)}
     #return user
 
 @api.post('register', response={200 : Token})
 def register(request, data : UserIn):
-    user = User.objects.create(username=data.username, password=data.password)
+    user = None
+    try:
+        user = User.objects.create(username=data.username, password=data.password)
+    except:
+        raise HttpError(409, "Username already taken")
     return 200, {'id' : user.id, 'token' : create_JWT(sub = str(user.id), name = user.username)}

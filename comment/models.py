@@ -1,3 +1,4 @@
+from enum import unique
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -21,5 +22,6 @@ class Comment(models.Model):
         return f'Comment by {self.user} posted at {self.created_at}'
 
     class Meta:
+        unique_together = ['user', 'book']
         ordering = ['created_at']
 
