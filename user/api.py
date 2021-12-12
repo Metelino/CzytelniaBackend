@@ -50,7 +50,7 @@ def add_to_favorite(request, book_id : int):
     book = get_object_or_404(Book, id=book_id)
     profile = User.objects.get(id=id).profile
     if profile.books.filter(id=book.id).exists():
-        profile.books.exclude(book)
+        profile.books.remove(book)
     else:
         profile.books.add(book)
     return 204, None

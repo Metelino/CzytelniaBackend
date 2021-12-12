@@ -21,9 +21,9 @@ def get_comments(request, book_id: int):
 @api.get('{book_id}/user', response={200 : CommentSchema}, auth=JWT())
 def get_comments(request, book_id: int):
     user_id = int(request.auth['sub'])
-    book = get_object_or_404(Book, id=book_id, user_id=user_id)
+    book = get_object_or_404(Book, id=book_id)
     comment = book.comment_set.filter(user_id = user_id)
-    return 200, comment
+    return 200, comment.first()
 
 @api.post('{book_id}', response={201 : CommentSchema}, auth=JWT())
 def create_comment(request, book_id: int, data: CommentEditSchema):
@@ -38,10 +38,13 @@ def create_comment(request, book_id: int, data: CommentEditSchema):
 @api.put('{book_id}', response={204 : None}, auth=JWT())
 def update_comment(request, book_id : int,  data: CommentEditSchema):
     id = int(request.auth['sub'])
-    comm = get_object_or_404(Comment, book_id=book_id, user_id=id)
-    for attr, value in data.dict().items():
-        setattr(comm, attr, value)
-    comm.save()
+    try:
+        comm = Comment.objects.get(book_id=book_id, user_id=id)
+        for attr, value in data.dict().items():
+            setattr(comm, attr, value)
+        comm.save()
+    except:
+        Comment.objects.create(**data.dict(), user_id=id, book_id=book_id)
     return 204, None
 
 # @api.api_operation(["POST", "PATCH"], 'edit/{book_id}', response={204 : None}, auth=JWT())
