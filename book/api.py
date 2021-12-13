@@ -14,8 +14,8 @@ from .schemas import BookSchema, BookDetailSchema, BookFav
 api = Router()
 
 @api.get("{book_id}", response={200 : BookDetailSchema})
-def book_detail(request, id : int):
-    book = get_object_or_404(Book, id=id)
+def book_detail(request, book_id : int):
+    book = get_object_or_404(Book, id=book_id)
     return 200, book
 
 @api.get("", response={200 : List[BookSchema]})

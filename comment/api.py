@@ -18,12 +18,14 @@ def get_comments(request, book_id: int):
     comments = book.comment_set.all()
     return 200, list(comments)
 
-@api.get('{book_id}/user', response={200 : CommentSchema}, auth=JWT())
+@api.get('{book_id}/user', response={200 : CommentSchema, 204 : None}, auth=JWT())
 def get_comments(request, book_id: int):
     user_id = int(request.auth['sub'])
     book = get_object_or_404(Book, id=book_id)
     comment = book.comment_set.filter(user_id = user_id)
-    return 200, comment.first()
+    if comment.exists():
+        return 200, comment.first()
+    return 204, None
 
 @api.post('{book_id}', response={201 : CommentSchema}, auth=JWT())
 def create_comment(request, book_id: int, data: CommentEditSchema):
