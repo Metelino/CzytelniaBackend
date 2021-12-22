@@ -21,3 +21,10 @@ class Book(models.Model):
 
     liked = property(get_liked)
     disliked = property(get_disliked)
+
+# @receiver(post_save, sender=Book)
+# def create_user_profile(sender, instance, created, **kwargs):
+#     if created:
+#         instance.cover = reverse_lazy("api-1.0.0:cover", kwargs={"book_id":instance.id})
+#         instance.content = reverse_lazy("api-1.0.0:pdf", kwargs={"book_id":instance.id})
+#         instance.save()

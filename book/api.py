@@ -18,7 +18,7 @@ def book_detail(request, book_id : int):
     book = get_object_or_404(Book, id=book_id)
     return 200, book
 
-@api.get("list", response={200 : List[BookSchema]})
+@api.get("list", response={200 : List[BookSchema], 204 : None})
 def book_list(request, book_name : str = None, page_num : int = 1):
     books = None
     if book_name is None:
@@ -26,10 +26,13 @@ def book_list(request, book_name : str = None, page_num : int = 1):
     else:
         books = Book.objects.filter(name__icontains=book_name)
 
-    p = Paginator(books, 10)
-    books_page = p.get_page(page_num)
+    try:
+        p = Paginator(books, 6)
+        books_page = p.page(page_num)
+        return 200, list(books_page)
+    except:
+        return 204, None
 
-    return 200, list(books_page)
 
 @api.get("cover/{book_id}")
 def book_cover(request, book_id : int):
