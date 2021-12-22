@@ -19,7 +19,7 @@ def get_comments(request, book_id: int):
     return 200, list(comments)
 
 @api.get('{book_id}/user', response={200 : CommentSchema, 204 : None}, auth=JWT())
-def get_comments(request, book_id: int):
+def get_user_comment(request, book_id: int):
     user_id = int(request.auth['sub'])
     book = get_object_or_404(Book, id=book_id)
     comment = book.comment_set.filter(user_id = user_id)
