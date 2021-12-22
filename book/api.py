@@ -13,12 +13,12 @@ from .schemas import BookSchema, BookDetailSchema, BookFav
 
 api = Router()
 
-@api.get("{book_id}", response={200 : BookDetailSchema})
+@api.get("detail/{book_id}", response={200 : BookDetailSchema})
 def book_detail(request, book_id : int):
     book = get_object_or_404(Book, id=book_id)
     return 200, book
 
-@api.get("", response={200 : List[BookSchema]})
+@api.get("list", response={200 : List[BookSchema]})
 def book_list(request, book_name : str = None, page_num : int = 1):
     books = None
     if book_name is None:
@@ -31,12 +31,12 @@ def book_list(request, book_name : str = None, page_num : int = 1):
 
     return 200, list(books_page)
 
-@api.get("{book_id}/cover")
+@api.get("cover/{book_id}")
 def book_cover(request, book_id : int):
     book = get_object_or_404(Book, id=book_id)
     return FileResponse(open(book.cover.path, 'rb'), status=200)
 
-@api.get("{book_id}/pdf", auth=JWT())
+@api.get("pdf/{book_id}", auth=JWT())
 def book_page(request, book_id : int, page_num : int = 1):
     book = get_object_or_404(Book, id=book_id)
     #page_num = request.GET.get('page_num', 1)
