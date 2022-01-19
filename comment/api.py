@@ -12,13 +12,13 @@ from user.models import User
 
 api = Router()
 
-@api.get('{book_id}', response={200 : List[CommentSchema]})
-def get_comments(request, book_id: int):
+@api.get('all', response={200 : List[CommentSchema]})
+def get_all_comments(request, book_id: int):
     book = get_object_or_404(Book, id=book_id)
     comments = book.comment_set.all()
     return 200, list(comments)
 
-@api.get('{book_id}/user', response={200 : CommentSchema, 204 : None}, auth=JWT())
+@api.get('', response={200 : CommentSchema, 204 : None}, auth=JWT())
 def get_user_comment(request, book_id: int):
     user_id = int(request.auth['sub'])
     book = get_object_or_404(Book, id=book_id)
@@ -27,7 +27,7 @@ def get_user_comment(request, book_id: int):
         return 200, comment.first()
     return 204, None
 
-@api.post('{book_id}', response={201 : CommentSchema}, auth=JWT())
+@api.post('', response={201 : CommentSchema}, auth=JWT())
 def create_comment(request, book_id: int, data: CommentEditSchema):
     id = int(request.auth['sub'])
     print(data.dict())
@@ -37,7 +37,7 @@ def create_comment(request, book_id: int, data: CommentEditSchema):
     except:
         raise HttpError(409, "Review already exists")
 
-@api.put('{book_id}', response={204 : None}, auth=JWT())
+@api.put('', response={204 : None}, auth=JWT())
 def update_comment(request, book_id : int,  data: CommentEditSchema):
     id = int(request.auth['sub'])
     try:
@@ -61,7 +61,7 @@ def update_comment(request, book_id : int,  data: CommentEditSchema):
 #         comm = Comment.objects.create(**data.dict(), book_id=book_id, user_id=id)
 #     return 204, None
 
-@api.delete('{book_id}', response={204 : None}, auth=JWT())
+@api.delete('', response={204 : None}, auth=JWT())
 def del_comment(request, book_id: int):
     user_id = int(request.auth['sub'])
     comment = get_object_or_404(Comment, book_id=book_id, user_id=user_id)

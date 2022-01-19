@@ -37,7 +37,7 @@ class MyRenderer(BaseRenderer):
 
 api = NinjaAPI(renderer=MyRenderer())
 api.add_router("books/", book_router)
-api.add_router("comments/", comment_router)
+api.add_router("books/{book_id}/comments/", comment_router)
 api.add_router("users/", user_router)
 
 urlpatterns = [

@@ -26,23 +26,24 @@ def book_list(request, book_name : str = None, page_num : int = 1):
     else:
         books = Book.objects.filter(name__icontains=book_name)
 
-    p = Paginator(books, 6)
     try:
+        p = Paginator(books, 6)
         books_page = p.page(page_num)
         return 200, list(books_page)
     except:
         return 204, None
 
-    
 
-@api.get("cover/{book_id}")
+@api.get("cover/{book_id}", url_name='cover')
 def book_cover(request, book_id : int):
     book = get_object_or_404(Book, id=book_id)
     return FileResponse(open(book.cover.path, 'rb'), status=200)
 
-@api.get("pdf/{book_id}", auth=JWT())
+@api.get("pdf/{book_id}", auth=JWT(), url_name='pdf')
 def book_page(request, book_id : int):
     book = get_object_or_404(Book, id=book_id)
     #page_num = request.GET.get('page_num', 1)
-    print(f'PATH : {book.content.path}')
-    return FileResponse(open(book.content.path, 'rb'), status=200)
+    #print(f'PATH : {book.content.path}')
+    http = FileResponse(open(book.content.path, 'rb'), status=200)
+    http['Content'] = 'application/pdf'
+    return http

@@ -1,0 +1,6 @@
+django
+django-ninja
+django-cors-headers
+orjson
+pyyaml
+python-jose[cryptography]
