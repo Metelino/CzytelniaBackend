@@ -20,6 +20,7 @@ android frontend app: https://github.com/AdKowalewski/Czytelnia.
 - Python - version 3.9.7
 - Django - version 3.2.4
 - Django Ninja - version 0.16.1
+- SQLite database
 
 ## Features
 
