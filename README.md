@@ -13,7 +13,7 @@
 Backend application for a free book library. 
 Application exposes REST API for use for frontend apps.
 This application is supposed to work in conjcution with
-android frontend app:\ https://github.com/AdKowalewski/Czytelnia.
+android frontend app: https://github.com/AdKowalewski/Czytelnia.
 
 ## Technologies Used
 
